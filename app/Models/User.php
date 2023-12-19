@@ -62,45 +62,65 @@ class User extends Authenticatable
 
     public function login($request)
     {
-        if(!Auth::attempt($request->only('email', 'password')))
+        try
         {
-            return [
-                'message' => 'Credenciales inválidas'
-            ];
+            if(!Auth::attempt($request->only('email', 'password')))
+            {
+                throw new Exception('Credenciales inválidas');
+            }
+
+            $user = User::where('email', $request['email'])->firstOrFail();
+            $token = $user->createToken('auth_token')->plainTextToken;
+
+            return response()->json([
+                'message' => 'Hola '.$user->name,
+                'access_token'=> $token ,
+                'token_type' => 'Bearer',
+                'user' => $user,
+            ], 200);
+        }
+        catch(Exception $e)
+        {
+            return response()->json(['message' => $e->getMessage()], 401);
         }
 
-        $user = User::where('email', $request['email'])->firstOrFail();
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        return [
-            'message' => 'Hola '.$user->name,
-            'access_token'=> $token ,
-            'token_type' => 'Bearer',
-            'user' => $user,
-        ]; 
     }
     
     public function register($request)
     {
-        $user = User::create([
-            'name' => $request['name'],
-            'email' => $request['email'],
-            'password'=> Hash::make($request['password']),
-        ]);
+        try
+        {
+            $user = User::create([
+                'name' => $request['name'],
+                'email' => $request['email'],
+                'password'=> Hash::make($request['password']),
+            ]);
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+            $token = $user->createToken('auth_token')->plainTextToken;
 
-        return [
-            'message' => 'Hola '.$user->name,
-            'access_token'=> $token ,
-            'token_type' => 'Bearer',
-            'user' => $user,
-        ]; 
+            return response()->json([
+                'message' => 'Hola '.$user->name,
+                'access_token'=> $token ,
+                'token_type' => 'Bearer',
+                'user' => $user,
+            ], 200);
+        }
+        catch(Exception $e)
+        {
+            return response()->json(['message' => $e->getMessage()], 401);
+        }
     }
 
     public function logout($request)
     {
-        $request->user()->currentAccessToken()->delete();
+        try
+        {
+            $request->user()->currentAccessToken()->delete();
+        }
+        catch(Exception $e)
+        {
+            return response()->json(['message' => $e->getMessage()], 401);
+        }
     }
 
     public function sendCode($request)

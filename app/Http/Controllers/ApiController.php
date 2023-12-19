@@ -42,8 +42,7 @@ class ApiController extends Controller
 
         try
         {
-            $user = $this->user->login($request);
-            return response()->json($user, 200);
+            return $this->user->login($request);
         }
         catch(Exception $e)
         {
@@ -71,8 +70,7 @@ class ApiController extends Controller
 
         try
         {
-            $user = $this->user->register($request);
-            return response()->json($user, 201);
+            return $this->user->register($request);
         }
         catch(Exception $e)
         {
