@@ -4,8 +4,296 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9c491b8531eec05ba41a11d9276a5749",
+    "content-hash": "880622c71d07d43e81909b4b92f8cb4c",
     "packages": [
+        {
+            "name": "animelhd/animes-favoritev10",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/animelhd/animes-favoritev10.git",
+                "reference": "722e0e1af3b13e66f0f60f4664e9e81988d01845"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/animelhd/animes-favoritev10/zipball/722e0e1af3b13e66f0f60f4664e9e81988d01845",
+                "reference": "722e0e1af3b13e66f0f60f4664e9e81988d01845",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/framework": "^9.0|^10.0",
+                "php": "^8.0.2"
+            },
+            "require-dev": {
+                "brainmaestro/composer-git-hooks": "dev-master",
+                "friendsofphp/php-cs-fixer": "^3.5",
+                "laravel/pint": "^1.2",
+                "mockery/mockery": "^1.4.4",
+                "orchestra/testbench": "^8.0",
+                "phpunit/phpunit": "^10.0.0"
+            },
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Animelhd\\AnimesFavorite\\FavoriteServiceProvider"
+                    ]
+                },
+                "hooks": {
+                    "pre-commit": [
+                        "composer fix-style"
+                    ],
+                    "pre-push": [
+                        "composer test"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Animelhd\\AnimesFavorite\\": "src"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Tests\\": "tests"
+                }
+            },
+            "scripts": {
+                "post-update-cmd": [
+                    "cghooks remove",
+                    "cghooks add --ignore-lock",
+                    "cghooks update"
+                ],
+                "post-merge": [
+                    "composer install"
+                ],
+                "post-install-cmd": [
+                    "cghooks remove",
+                    "cghooks add --ignore-lock",
+                    "cghooks update"
+                ],
+                "cghooks": [
+                    "vendor/bin/cghooks"
+                ],
+                "check-style": [
+                    "vendor/bin/pint --test"
+                ],
+                "fix-style": [
+                    "vendor/bin/pint"
+                ],
+                "test": [
+                    "vendor/bin/phpunit --colors=always"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "animelhd",
+                    "email": "anzhengchao@gmail.com"
+                }
+            ],
+            "description": "User favorite features for Laravel Application.",
+            "support": {
+                "source": "https://github.com/animelhd/animes-favoritev10/tree/main",
+                "issues": "https://github.com/animelhd/animes-favoritev10/issues"
+            },
+            "time": "2023-08-02T23:05:05+00:00"
+        },
+        {
+            "name": "animelhd/animes-viewv10",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/animelhd/animes-viewv10.git",
+                "reference": "345c4d44e27a06d4ecf6118fa612ad1d9a2297f7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/animelhd/animes-viewv10/zipball/345c4d44e27a06d4ecf6118fa612ad1d9a2297f7",
+                "reference": "345c4d44e27a06d4ecf6118fa612ad1d9a2297f7",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/framework": "^9.0|^10.0",
+                "php": "^8.0.2"
+            },
+            "require-dev": {
+                "brainmaestro/composer-git-hooks": "dev-master",
+                "friendsofphp/php-cs-fixer": "^3.5",
+                "laravel/pint": "^1.2",
+                "mockery/mockery": "^1.4.4",
+                "orchestra/testbench": "^8.0",
+                "phpunit/phpunit": "^10.0.0"
+            },
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Animelhd\\AnimesView\\ViewServiceProvider"
+                    ]
+                },
+                "hooks": {
+                    "pre-commit": [
+                        "composer fix-style"
+                    ],
+                    "pre-push": [
+                        "composer test"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Animelhd\\AnimesView\\": "src"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Tests\\": "tests"
+                }
+            },
+            "scripts": {
+                "post-update-cmd": [
+                    "cghooks remove",
+                    "cghooks add --ignore-lock",
+                    "cghooks update"
+                ],
+                "post-merge": [
+                    "composer install"
+                ],
+                "post-install-cmd": [
+                    "cghooks remove",
+                    "cghooks add --ignore-lock",
+                    "cghooks update"
+                ],
+                "cghooks": [
+                    "vendor/bin/cghooks"
+                ],
+                "check-style": [
+                    "vendor/bin/pint --test"
+                ],
+                "fix-style": [
+                    "vendor/bin/pint"
+                ],
+                "test": [
+                    "vendor/bin/phpunit --colors=always"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "animelhd",
+                    "email": "anzhengchao@gmail.com"
+                }
+            ],
+            "description": "User View features for Laravel Application.",
+            "support": {
+                "source": "https://github.com/animelhd/animes-viewv10/tree/main",
+                "issues": "https://github.com/animelhd/animes-viewv10/issues"
+            },
+            "time": "2023-08-03T00:35:12+00:00"
+        },
+        {
+            "name": "animelhd/animes-watchingv10",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/animelhd/animes-watchingv10.git",
+                "reference": "5b48fbef4544b051b2c67cd61778cdcd4f3a5fea"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/animelhd/animes-watchingv10/zipball/5b48fbef4544b051b2c67cd61778cdcd4f3a5fea",
+                "reference": "5b48fbef4544b051b2c67cd61778cdcd4f3a5fea",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/framework": "^9.0|^10.0",
+                "php": "^8.0.2"
+            },
+            "require-dev": {
+                "brainmaestro/composer-git-hooks": "dev-master",
+                "friendsofphp/php-cs-fixer": "^3.5",
+                "laravel/pint": "^1.2",
+                "mockery/mockery": "^1.4.4",
+                "orchestra/testbench": "^8.0",
+                "phpunit/phpunit": "^10.0.0"
+            },
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Animelhd\\AnimesWatching\\WatchingServiceProvider"
+                    ]
+                },
+                "hooks": {
+                    "pre-commit": [
+                        "composer fix-style"
+                    ],
+                    "pre-push": [
+                        "composer test"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Animelhd\\AnimesWatching\\": "src"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Tests\\": "tests"
+                }
+            },
+            "scripts": {
+                "post-update-cmd": [
+                    "cghooks remove",
+                    "cghooks add --ignore-lock",
+                    "cghooks update"
+                ],
+                "post-merge": [
+                    "composer install"
+                ],
+                "post-install-cmd": [
+                    "cghooks remove",
+                    "cghooks add --ignore-lock",
+                    "cghooks update"
+                ],
+                "cghooks": [
+                    "vendor/bin/cghooks"
+                ],
+                "check-style": [
+                    "vendor/bin/pint --test"
+                ],
+                "fix-style": [
+                    "vendor/bin/pint"
+                ],
+                "test": [
+                    "vendor/bin/phpunit --colors=always"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "animelhd",
+                    "email": "anzhengchao@gmail.com"
+                }
+            ],
+            "description": "User Watching features for Laravel Application.",
+            "support": {
+                "source": "https://github.com/animelhd/animes-watchingv10/tree/main",
+                "issues": "https://github.com/animelhd/animes-watchingv10/issues"
+            },
+            "time": "2023-08-17T23:04:19+00:00"
+        },
         {
             "name": "brick/math",
             "version": "0.11.0",
@@ -1047,16 +1335,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v10.37.1",
+            "version": "v10.37.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "b41612c58e358655cda1239e18d8851ff8736e8f"
+                "reference": "996375dd61f8c6e4ac262b57ed485655d71fcbdc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/b41612c58e358655cda1239e18d8851ff8736e8f",
-                "reference": "b41612c58e358655cda1239e18d8851ff8736e8f",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/996375dd61f8c6e4ac262b57ed485655d71fcbdc",
+                "reference": "996375dd61f8c6e4ac262b57ed485655d71fcbdc",
                 "shasum": ""
             },
             "require": {
@@ -1245,7 +1533,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2023-12-12T19:03:09+00:00"
+            "time": "2023-12-13T20:10:58+00:00"
         },
         {
             "name": "laravel/prompts",
@@ -2465,6 +2753,67 @@
                 }
             ],
             "time": "2023-11-12T21:59:55+00:00"
+        },
+        {
+            "name": "predis/predis",
+            "version": "v2.2.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/predis/predis.git",
+                "reference": "b1d3255ed9ad4d7254f9f9bba386c99f4bb983d1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/predis/predis/zipball/b1d3255ed9ad4d7254f9f9bba386c99f4bb983d1",
+                "reference": "b1d3255ed9ad4d7254f9f9bba386c99f4bb983d1",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2 || ^8.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.3",
+                "phpstan/phpstan": "^1.9",
+                "phpunit/phpunit": "^8.0 || ~9.4.4"
+            },
+            "suggest": {
+                "ext-relay": "Faster connection with in-memory caching (>=0.6.2)"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Predis\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Till Krüss",
+                    "homepage": "https://till.im",
+                    "role": "Maintainer"
+                }
+            ],
+            "description": "A flexible and feature-complete Redis client for PHP.",
+            "homepage": "http://github.com/predis/predis",
+            "keywords": [
+                "nosql",
+                "predis",
+                "redis"
+            ],
+            "support": {
+                "issues": "https://github.com/predis/predis/issues",
+                "source": "https://github.com/predis/predis/tree/v2.2.2"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/sponsors/tillkruss",
+                    "type": "github"
+                }
+            ],
+            "time": "2023-09-13T16:42:03+00:00"
         },
         {
             "name": "psr/clock",
@@ -6704,16 +7053,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "10.5.2",
+            "version": "10.5.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "5aedff46afba98dddecaa12349ec044d9103d4fe"
+                "reference": "6fce887c71076a73f32fd3e0774a6833fc5c7f19"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/5aedff46afba98dddecaa12349ec044d9103d4fe",
-                "reference": "5aedff46afba98dddecaa12349ec044d9103d4fe",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/6fce887c71076a73f32fd3e0774a6833fc5c7f19",
+                "reference": "6fce887c71076a73f32fd3e0774a6833fc5c7f19",
                 "shasum": ""
             },
             "require": {
@@ -6785,7 +7134,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/10.5.2"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/10.5.3"
             },
             "funding": [
                 {
@@ -6801,7 +7150,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-12-05T14:54:33+00:00"
+            "time": "2023-12-13T07:25:23+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -7935,16 +8284,16 @@
         },
         {
             "name": "spatie/laravel-ignition",
-            "version": "2.3.1",
+            "version": "2.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-ignition.git",
-                "reference": "bf21cd15aa47fa4ec5d73bbc932005c70261efc8"
+                "reference": "4800661a195e15783477d99f7f8f669a49793996"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-ignition/zipball/bf21cd15aa47fa4ec5d73bbc932005c70261efc8",
-                "reference": "bf21cd15aa47fa4ec5d73bbc932005c70261efc8",
+                "url": "https://api.github.com/repos/spatie/laravel-ignition/zipball/4800661a195e15783477d99f7f8f669a49793996",
+                "reference": "4800661a195e15783477d99f7f8f669a49793996",
                 "shasum": ""
             },
             "require": {
@@ -8023,7 +8372,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-10-09T12:55:26+00:00"
+            "time": "2023-12-15T13:44:49+00:00"
         },
         {
             "name": "symfony/yaml",
@@ -8150,12 +8499,16 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "animelhd/animes-favoritev10": 20,
+        "animelhd/animes-viewv10": 20,
+        "animelhd/animes-watchingv10": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": "^8.1"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.6.0"
 }

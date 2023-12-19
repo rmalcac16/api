@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\ApiController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -14,6 +16,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::post("login", ApiController::class . "@login");
+Route::post("register", ApiController::class . "@register");
+Route::post("send-code", ApiController::class . "@sendCode");
+Route::post("restore-password", ApiController::class . "@restorePassword");
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post("logout", ApiController::class . "@logout");
+    Route::post("home", ApiController::class . "@home");
+    Route::post("search", ApiController::class . "@search");
+    Route::post("anime", ApiController::class . "@anime");
+    Route::post("animes", ApiController::class . "@animes");
+    Route::post("calendar", ApiController::class . "@calendar");
+    Route::post("episodes", ApiController::class . "@episodes");
+    Route::post("players", ApiController::class . "@players");
+    Route::post("lists-animes", ApiController::class . "@listsAnimes");
+    Route::post("update", ApiController::class . "@updateProfile");
 });
