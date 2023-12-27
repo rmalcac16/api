@@ -37,7 +37,7 @@ class Anime extends Model
 
     public function getLatinos(){
         try {
-            return this
+            return $this
             ->select('animes.id', 'name', 'poster', 'vote_average','status', \DB::raw('MAX(number) as number'),\DB::raw('MAX(players.id) as idplayer'))
             ->LeftJoin('episodes', 'episodes.anime_id', '=', 'animes.id')
             ->LeftJoin('players','episode_id', '=', 'episodes.id')
