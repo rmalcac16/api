@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Support\Facades\Mail;
+use Mail;
 
 use App\Mail\SendCodeRestorePassword;
 
@@ -95,9 +95,7 @@ class User extends Authenticatable
                 'email' => $request['email'],
                 'password'=> Hash::make($request['password']),
             ]);
-
             $token = $user->createToken('auth_token')->plainTextToken;
-
             return response()->json([
                 'message' => 'Hola '.$user->name,
                 'access_token'=> $token ,
@@ -116,6 +114,7 @@ class User extends Authenticatable
         try
         {
             $request->user()->currentAccessToken()->delete();
+            return response()->json(['message' => 'Sesión cerrada'], 200);
         }
         catch(Exception $e)
         {
@@ -128,40 +127,27 @@ class User extends Authenticatable
         try {
             $user = User::where('email', $request->email)->firstOrFail();
             $codeExist = Code::where('user_id', $user->id)->first();
-            if($codeExist && now()->diffInMinutes($codeExist->created_at) < 5){
-                return [
-                    'message' => 'El codigo ya ha sido enviado, por favor revisa tu correo.',
-                ];
-            }
-            else{
-                if($codeExist)
-                    $codeExist->delete();
-                $code = rand(100000, 999999);
-                $response = Mail::to($user->email)->send(new SendCodeRestorePassword($code));
-                if($response){
-                    $sendCode = new Code([
-                        'codigo' => $code,
-                        'user_id' => $user->id,
-                        'expires_at' => now()->addMinutes(5)
-                    ]);
-                    $sendCode->save();
-                    return [
-                        'message' => 'Código enviado',
-                        'user_email' => $user->email,
-                        'user_id' => $user->id,
-                    ];
-                }else {
-                    return [
-                        'message' => 'Error al enviar el código',
-                    ];
-                }
-
-            }
+            if($codeExist && now()->diffInMinutes($codeExist->created_at) < 5)
+                throw new Exception("El codigo ya ha sido enviado, por favor revisa tu correo.", 1);
+            if($codeExist)
+                $codeExist->delete();
+            $code = rand(100000, 999999);
+            $response = Mail::to($user->email)->send(new SendCodeRestorePassword($code));
+            if(!$response)
+                throw new Exception("Error al enviar el código", 1);
+            $sendCode = new Code([
+                'codigo' => $code,
+                'user_id' => $user->id,
+                'expires_at' => now()->addMinutes(5)
+            ]);
+            $sendCode->save();
+            return response()->json([
+                'message' => 'Código enviado',
+                'user_email' => $user->email,
+                'user_id' => $user->id,
+            ], 200);
         } catch (Exception $e) {
-            return [
-                'message' => 'Error al enviar el código',
-                'error' => $e->getMessage(),
-            ];
+            return response()->json(['message' => $e->getMessage()], 401);
         }
     }
 
@@ -170,98 +156,49 @@ class User extends Authenticatable
         try {
             $user = User::where('email', $request->email)->firstOrFail();
             $codeExist = Code::where('user_id', $user->id)->first();
-            if($codeExist && now()->diffInMinutes($codeExist->created_at) < 5){
-                if($codeExist->codigo == $request->code){
-                    $user->password = Hash::make($request->password);
-                    $user->save();
-                    $codeExist->delete();
-                    return [
-                        'message' => 'Contraseña actualizada',
-                    ];
-                }else{
-                    return [
-                        'message' => 'Código incorrecto',
-                    ];
-                }
-            }
-            else{
-                return [
-                    'message' => 'El código ha expirado, por favor solicita uno nuevo.',
-                ];
-            }
+            if($codeExist->codigo != $request->code)
+                throw new Exception("El código ingresado es incorrecto", 1);
+            if(!($codeExist && now()->diffInMinutes($codeExist->created_at) < 5))
+                throw new Exception("El código ha expirado, por favor solicita uno nuevo.", 1);
+            $user->password = Hash::make($request->password);
+            $user->save();
+            $codeExist->delete();
+            return response()->json([
+                'message' => 'Contraseña actualizada',
+            ], 200);            
         } catch (Exception $e) {
-            return [
-                'message' => 'Error al actualizar la contraseña',
-                'error' => $e->getMessage(),
-            ];
+            return response()->json(['message' => $e->getMessage()], 401);
         }
     }
-
 
     public function updateProfile($request)
     {
         try {
             $user = $request->user();
-            $request->validate([
-                'name' => [
-                    'required',
-                    'string',
-                    'unique:users,name,' . $user->id,
-                    'regex:/^[a-zA-Z0-9\s.-]+$/u'
-                ],
-                'image' => 'required|url',
-            ],
-            [
-                'name.required' => 'El nombre es requerido',
-                'name.string' => 'El nombre debe ser una cadena de texto',
-                'name.unique' => 'El nombre ya existe',
-                'name.regex' => 'El nombre no es válido',
-                'image.required' => 'La imagen es requerida',
-                'image.url' => 'La imagen no es válida',
-            ]);
             $user->name = $request->input('name');
             $user->image = $request->input('image');
             $user->save();
-            return ['status' => true, 'message' => 'Usuario actualizado correctamente'];
-        } catch (ValidationException $e) {
-            return ['status' => false, 'message' => $e->errors()];
-        } catch (Exception $e) {
-            return ['status' => false, 'message' => 'Ocurrió un error inesperado', 'error' => $e->getMessage()];
+            return response()->json([
+                'message' => 'Perfil actualizado',
+                'user' => $user,
+            ], 200);
+        }catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 401);
         }
     }
 
-    public function getFavoriteAnimes($user) {
+    public function getListAnimes($request) {
         try {
-			return $user->getFavoriteItems(Anime::class)->select('slug','name','poster')->orderBy('name','asc')->get();
+            $user = $request->user();
+            $data =  array(
+                'favorites' => $user->getFavoriteItems(Anime::class)->select('slug','name','poster')->orderBy('created_at','desc')->get(),
+                'watchings' => $user->getWatchingItems(Anime::class)->select('slug','name','poster')->orderBy('created_at','desc')->get(),
+                'endeds' => $user->getViewItems(Anime::class)->select('slug','name','poster')->orderBy('created_at','desc')->get()
+            );
+            return response()->json($data, 200);
         } catch (Exception $e) {
-            return [
-                'message' => 'Error',
-                'error' => $e->getMessage(),
-            ];
+            return response()->json(['message' => $e->getMessage()], 401);
         }
     }
-
-    public function getWatchingAnimes($user) {
-        try {
-			return $user->getWatchingItems(Anime::class)->select('slug','name','poster')->orderBy('name','asc')->get();
-        } catch (Exception $e) {
-            return [
-                'message' => 'Error',
-                'error' => $e->getMessage(),
-            ];
-        }
-    }
-
-    public function getEndedAnimes($user) {
-        try {
-			return $user->getViewItems(Anime::class)->select('slug','name','poster')->orderBy('name','asc')->get();
-        } catch (Exception $e) {
-            return [
-                'message' => 'Error',
-                'error' => $e->getMessage(),
-            ];
-        }
-    }
-
     
 }

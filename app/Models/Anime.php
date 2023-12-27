@@ -17,120 +17,86 @@ class Anime extends Model
 	use Vieweable;
 	use Watchingable;
 
+    public function episodes()
+    {
+        return $this->hasMany(\App\Models\Episode::class);
+    }
+
+    public function mylist()
+    {
+        return $this->hasMany(\App\Models\MyList::class);
+    }
+
     public function getRecents(){
         try {
-            $recents = $this->select('id','name','poster')->orderBy('created_at', 'desc')->take(10)->get();
-            return [
-                'status' => 'success',
-                'data' => $recents
-            ];
+            return $this->select('id','name','poster')->orderBy('created_at', 'desc')->take(10)->get();
         } catch (Exception $e) {
-            return [
-                'message' => $e->getMessage(),
-                'status' => 'error',
-                'data' => []
-            ];
+            return array('message' => $e->getMessage());
         }
     }
 
     public function getLatinos(){
         try {
-            $data = $this
-                ->select('animes.id', 'name', 'poster', 'vote_average','status', \DB::raw('MAX(number) as number'),\DB::raw('MAX(players.id) as idplayer'))
-                ->LeftJoin('episodes', 'episodes.anime_id', '=', 'animes.id')
-                ->LeftJoin('players','episode_id', '=', 'episodes.id')
-                ->where('players.languaje', 1)
-                ->groupBy('animes.id')
-                ->orderBy('idplayer','desc')
-                ->limit(14)
-                ->get();
-
-            return [
-                'status' => 'success',
-                'data' => $data
-            ];
+            return this
+            ->select('animes.id', 'name', 'poster', 'vote_average','status', \DB::raw('MAX(number) as number'),\DB::raw('MAX(players.id) as idplayer'))
+            ->LeftJoin('episodes', 'episodes.anime_id', '=', 'animes.id')
+            ->LeftJoin('players','episode_id', '=', 'episodes.id')
+            ->where('players.languaje', 1)
+            ->groupBy('animes.id')
+            ->orderBy('idplayer','desc')
+            ->limit(14)
+            ->get();
         } catch (Exception $e) {
-            return [
-                'message' => $e->getMessage(),
-                'status' => 'error',
-                'data' => []
-            ];
+            return array('message' => $e->getMessage());
         }
     }
 
     public function getPopulars(){
         try {
-            $populars = $this->select('id','name','poster','vote_average')->orderBy('vote_average', 'desc')->take(10)->get();
-            return [
-                'status' => 'success',
-                'data' => $populars
-            ];
+            return $this->select('id','name','poster','vote_average')->orderBy('vote_average', 'desc')->take(10)->get();
         } catch (Exception $e) {
-            return [
-                'message' => $e->getMessage(),
-                'status' => 'error',
-                'data' => []
-            ];
+            return array('message' => $e->getMessage());
         }
     }
 
     public function getMoreViews(){
         try {
-            $moreViews = $this->select('id','name','poster','views_app')->orderBy('views_app', 'desc')->take(10)->get();
-            return [
-                'status' => 'success',
-                'data' => $moreViews
-            ];
+            return $this->select('id','name','poster','views_app')->orderBy('views_app', 'desc')->take(10)->get();
         } catch (Exception $e) {
-            return [
-                'message' => $e->getMessage(),
-                'status' => 'error',
-                'data' => []
-            ];
+            return array('message' => $e->getMessage());
         }
     }
 
-    public function getAnimeSearch($request){
+    public function search($request){
         try {
-            $search = $this->select('id', 'name', 'poster')
+            $data = $this->select('id', 'name', 'poster')
                 ->orderBy('name')
                 ->where('name','LIKE',"%{$request->search}%")
                 ->orwhere('name_alternative','LIKE',"%{$request->search}%")
                 ->orwhere('overview','LIKE',"%{$request->search}%")
                 ->limit(24)
                 ->get();
-            return [
-                'status' => 'success',
-                'data' => $search
-            ];
+            return response()->json(['data' => $data], 200);
         } catch (Exception $e) {
-            return [
-                'message' => $e->getMessage(),
-                'status' => 'error',
-                'data' => []
-            ];
+            return response()->json(['message' => $e->getMessage()], 401);
         }
     }
 
     public function getAnime($request){
         try {
             $anime = $this->where('id', $request->id)->first();
-            return [
-                'status' => 'success',
-                'data' => $anime
+            $data = [
+                'anime' => $anime,
+                'recommendations' => $this->getRecommendations($anime)
             ];
+            return response()->json($data, 200);
         } catch (Exception $e) {
-            return [
-                'message' => $e->getMessage(),
-                'status' => 'error',
-                'data' => []
-            ];
+            return response()->json(['message' => $e->getMessage()], 401);
         }
     }
 
-    public function getCalendar(){
+    public function calendar(){
         try {
-
             $data = $this->select('id','name','poster','broadcast')->orderBy('broadcast')->where('status', 1)->get();
 			$daysOfWeek = [
 				1 => 'Lunes',
@@ -148,20 +114,12 @@ class Anime extends Model
 			foreach ($groupedData as $day => $animes) {
 				$formattedData[] = [
 					'day' => $day,
-					'data' => $animes->toArray(),
+					'animes' => $animes->toArray(),
 				];
 			}
-
-            return [
-                'status' => 'success',
-                'data' => $formattedData
-            ];
+            return response()->json(['data' => $formattedData], 200);
         } catch (Exception $e) {
-            return [
-                'message' => $e->getMessage(),
-                'status' => 'error',
-                'data' => []
-            ];
+            return response()->json(['message' => $e->getMessage()], 401);
         }
     }
 
@@ -169,17 +127,14 @@ class Anime extends Model
     {
 		$first_name = explode(' ',trim($anime->name));
 		$first_name = $first_name[0];
-
 		$genres = explode(',',trim($anime->genres));
 		$first_genre = '';
 		$second_genre = '';
-
 		if(count($genres) >= 2){
 			$randoms = array_rand($genres, 2);
 			$first_genre = $genres[$randoms[0]];
 			$second_genre = $genres[$randoms[1]];
 		}
-
         return $this->select('id','name','banner')
 			->where('genres','LIKE',"%{$first_genre}%")
 			->where('genres','LIKE',"%{$second_genre}%")
@@ -188,8 +143,9 @@ class Anime extends Model
 			->inRandomOrder()
 			->get();
     }
+    
 
-	public function getAnimes($request)
+	public function animes($request)
     {
         try {
             $data = $this
@@ -213,13 +169,9 @@ class Anime extends Model
                     $data = $data->where('genres','LIKE',"%{$request->genre}%");
             }
             $data = $data->simplePaginate(28);
-            return $data;
+            return response()->json($data, 200);
         } catch (Exception $e) {
-            return [
-                'message' => $e->getMessage(),
-                'status' => 'error',
-                'data' => []
-            ];
+            return response()->json(['message' => $e->getMessage()], 401);
         }
     }
 

@@ -9,6 +9,16 @@ class Player extends Model
 {
     use HasFactory;
 
+    public function server()
+    {
+        return $this->belongsTo(\App\Models\Server::class);
+    }
+
+    public function episode()
+    {
+        return $this->belongsTo(\App\Models\Episode::class);
+    }
+
     public function getPlayersByEpisodeId($request){
         try {
             $players = $this
@@ -26,16 +36,11 @@ class Player extends Model
             $response = [];
             $response[0] = $groupedData[0] ?? [];
             $response[1] = $groupedData[1] ?? [];
-            return [
-                'status' => 'success',
-                'data' => $response
-            ];
+            return response()->json([
+                'data' => $response,
+            ], 200);
         } catch (Exception $e) {
-            return [
-                'message' => $e->getMessage(),
-                'status' => 'error',
-                'data' => []
-            ];
+            return response()->json(['message' => $e->getMessage()], 401);
         }
     }
 

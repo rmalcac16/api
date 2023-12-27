@@ -11,6 +11,8 @@ use App\Models\Genre;
 use App\Models\Server;
 use App\Models\Player;
 
+use Exception;
+
 class ApiController extends Controller
 {
     
@@ -39,15 +41,7 @@ class ApiController extends Controller
             'email.required' => 'El correo es requerido',
             'password.required' => 'La contraseña es requerida',
         ]);
-
-        try
-        {
-            return $this->user->login($request);
-        }
-        catch(Exception $e)
-        {
-            return response()->json(['message' => $e->getMessage()], 401);
-        }
+        return $this->user->login($request);
     }
 
     public function register(Request $request)
@@ -67,28 +61,12 @@ class ApiController extends Controller
             'password.min' => 'La contraseña debe tener al menos 8 caracteres',
             'password.required' => 'La contraseña es requerida',
         ]);
-
-        try
-        {
-            return $this->user->register($request);
-        }
-        catch(Exception $e)
-        {
-            return response()->json(['message' => $e->getMessage()], 401);
-        }
+        return $this->user->register($request);
     }
 
     public function logout(Request $request)
     {
-        try
-        {
-            $user = $this->user->logout($request);
-            return response()->json(['message' => 'Sesión cerrada'], 200);
-        }
-        catch(Exception $e)
-        {
-            return response()->json(['message' => $e->getMessage()], 401);
-        }
+        return $this->user->logout($request);
     }
 
     public function sendCode(Request $request)
@@ -101,16 +79,7 @@ class ApiController extends Controller
             'email.email' => 'El correo no es válido',
             'email.required' => 'El correo es requerido',
         ]);
-
-        try
-        {
-            $response = $this->user->sendCode($request);
-            return response()->json($response, 200);
-        }
-        catch(Exception $e)
-        {
-            return response()->json(['message' => $e->getMessage()], 401);
-        }
+        return $this->user->sendCode($request);
     }
 
     public function restorePassword(Request $request)
@@ -135,48 +104,34 @@ class ApiController extends Controller
             'password.min' => 'La contraseña debe tener al menos 8 caracteres',
             'password.required' => 'La contraseña es requerida',
         ]);
-
-        try
-        {
-            $response = $this->user->restorePassword($request);
-            return response()->json($response, 200);
-        }
-        catch(Exception $e)
-        {
-            return response()->json(['message' => $e->getMessage()], 401);
-        }
+        return $this->user->restorePassword($request);
     }
 
 	public function updateProfile(Request $request)
 	{
-        try
-        {
-            $response = $this->user->updateProfile($request);
-            return response()->json($response, 200);
-        }
-        catch(Exception $e)
-        {
-            return response()->json(['message' => $e->getMessage()], 500);
-        }
+        $request->validate([
+            'name' => [
+                'required',
+                'string',
+                'unique:users,name,' . $request->user()->id,
+                'regex:/^[a-zA-Z0-9\s.-]+$/u'
+            ],
+            'image' => 'required|url',
+        ],
+        [
+            'name.required' => 'El nombre es requerido',
+            'name.string' => 'El nombre debe ser una cadena de texto',
+            'name.unique' => 'El nombre ya existe',
+            'name.regex' => 'El nombre no es válido',
+            'image.required' => 'La imagen es requerida',
+            'image.url' => 'La imagen no es válida',
+        ]);
+        return $this->user->updateProfile($request);
 	}
 
     public function listsAnimes(Request $request){
-        try
-        {
-            $user = $this->user::find($request->user_id);
-            $data =  array(
-                'favorites' => $this->user->getFavoriteAnimes($user),
-                'watchings' => $this->user->getWatchingAnimes($user),
-                'endeds' => $this->user->getEndedAnimes($user)
-            );
-            return response()->json($data, 200);
-        }
-        catch(Exception $e)
-        {
-            return response()->json(['message' => $e->getMessage()], 500);
-        }
+        return $this->user->getListAnimes($request);
     }
-
 
     public function home(Request $request)
     {
@@ -206,28 +161,12 @@ class ApiController extends Controller
             'search.required' => 'La búsqueda es requerida',
         ]);
 
-        try
-        {
-            $response = $this->anime->search($request);
-            return response()->json($response, 200);
-        }
-        catch(Exception $e)
-        {
-            return response()->json(['message' => $e->getMessage()], 401);
-        }
+        return $this->anime->search($request);
     }
 
     public function animes(Request $request)
     {
-        try
-        {
-            $response = $this->anime->getAnimes($request);
-            return response()->json($response, 200);
-        }
-        catch(Exception $e)
-        {
-            return response()->json(['message' => $e->getMessage()], 401);
-        }
+        return $this->anime->animes($request);
     }
 
     public function anime(Request $request)
@@ -240,29 +179,12 @@ class ApiController extends Controller
             'id.numeric' => 'El anime debe ser un número',
             'id.required' => 'El anime es requerido',
         ]);
-
-        try
-        {
-            $response = $this->anime->getAnime($request);
-            return response()->json($response, 200);
-        }
-        catch(Exception $e)
-        {
-            return response()->json(['message' => $e->getMessage()], 401);
-        }
+        return $this->anime->getAnime($request);
     }
 
     public function calendar(Request $request)
     {
-        try
-        {
-            $response = $this->anime->getCalendar();
-            return response()->json($response, 200);
-        }
-        catch(Exception $e)
-        {
-            return response()->json(['message' => $e->getMessage()], 401);
-        }
+        return $this->anime->calendar();
     }
 
     public function episodes(Request $request) {
@@ -274,16 +196,7 @@ class ApiController extends Controller
             'anime_id.numeric' => 'El anime debe ser un número',
             'anime_id.required' => 'El anime es requerido',
         ]);
-
-        try
-        {
-            $response = $this->episode->getEpisodesByAnimeId($request);
-            return response()->json($response, 200);
-        }
-        catch(Exception $e)
-        {
-            return response()->json(['message' => $e->getMessage()], 401);
-        }
+        return $this->episode->getEpisodesByAnimeId($request);
     }
 
     public function players(Request $request) {
@@ -295,16 +208,7 @@ class ApiController extends Controller
             'episode_id.numeric' => 'El episodio debe ser un número',
             'episode_id.required' => 'El episodio es requerido',
         ]);
-
-        try
-        {
-            $response = $this->player->getPlayersByEpisodeId($request);
-            return response()->json($response, 200);
-        }
-        catch(Exception $e)
-        {
-            return response()->json(['message' => $e->getMessage()], 401);
-        }
+        return $this->player->getPlayersByEpisodeId($request);
     }
     
 }
