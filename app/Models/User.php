@@ -191,9 +191,9 @@ class User extends Authenticatable
         try {
             $user = $request->user();
             $data =  array(
-                'favorites' => $user->getFavoriteItems(Anime::class)->select('slug','name','poster')->orderBy('created_at','desc')->get(),
-                'watchings' => $user->getWatchingItems(Anime::class)->select('slug','name','poster')->orderBy('created_at','desc')->get(),
-                'endeds' => $user->getViewItems(Anime::class)->select('slug','name','poster')->orderBy('created_at','desc')->get()
+                'favorites' => $user->getFavoriteItems(Anime::class)->select('id','name','poster')->orderBy('created_at','desc')->get(),
+                'watchings' => $user->getWatchingItems(Anime::class)->select('id','name','poster')->orderBy('created_at','desc')->get(),
+                'endeds' => $user->getViewItems(Anime::class)->select('id','name','poster')->orderBy('created_at','desc')->get()
             );
             return response()->json($data, 200);
         } catch (Exception $e) {
