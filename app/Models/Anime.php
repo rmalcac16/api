@@ -149,12 +149,20 @@ class Anime extends Model
     {
         try {
             if($request->list == "populars") {
+                if($request->page > 1)
+                    return response()->json(["data" => []], 200);
                 return response()->json(["data" => $this->getPopulars()], 200);
             }else if ($request->list == "recents") {
+                if($request->page > 1)
+                    return response()->json(["data" => []], 200);
                 return response()->json(["data" => $this->getRecents()], 200);
             }else if ($request->list == "moreviews") {
+                if($request->page > 1)
+                    return response()->json(["data" => []], 200);
                 return response()->json(["data" => $this->getMoreViews()], 200);
             }else if( $request->list == "latinos") {
+                if($request->page > 1)
+                    return response()->json(["data" => []], 200);
                 return response()->json(["data" => $this->getLatinos()], 200);
             }
 
