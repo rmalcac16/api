@@ -28,9 +28,12 @@ class Episode extends Model
 
     public function getRecents(){
         try {
-            return $this->orderBy('created_at', 'desc')->with(['anime' => function ($q) {
-                $q->select('id','name','slug','banner');
-            }])->take(10)->get();
+            return $this
+                ->select('episodes.id','name', 'number', 'banner', 'animes.id as animeId')
+                ->join('animes', 'animes.id', '=', 'episodes.anime_id')
+                ->orderBy('episodes.created_at', 'desc')
+                ->take(10)
+                ->get();
         } catch (Exception $e) {
             return array('message' => $e->getMessage());
         }
