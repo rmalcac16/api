@@ -163,7 +163,15 @@ class Anime extends Model
             }else if( $request->list == "latinos") {
                 if($request->page > 1)
                     return response()->json(["data" => []], 200);
-                return response()->json(["data" => $this->getLatinos()], 200);
+                $data = $this
+                    ->select('animes.id', 'name', 'poster', 'vote_average','status', \DB::raw('MAX(number) as number'),\DB::raw('MAX(players.id) as idplayer'))
+                    ->LeftJoin('episodes', 'episodes.anime_id', '=', 'animes.id')
+                    ->LeftJoin('players','episode_id', '=', 'episodes.id')
+                    ->where('players.languaje', 1)
+                    ->groupBy('animes.id')
+                    ->orderBy('idplayer','desc')
+                    ->get();
+                return response()->json(["data" => $data], 200);
             }
 
             $data = $this
