@@ -148,6 +148,16 @@ class Anime extends Model
 	public function animes($request)
     {
         try {
+            if($request->list == "populars") {
+                return response()->json(["data" => $this->getPopulars()], 200);
+            }else if ($request->list == "recents") {
+                return response()->json(["data" => $this->getRecents()], 200);
+            }else if ($request->list == "moreviews") {
+                return response()->json(["data" => $this->getMoreViews()], 200);
+            }else if( $request->list == "latinos") {
+                return response()->json(["data" => $this->getLatinos()], 200);
+            }
+
             $data = $this
                 ->select('id', 'name', 'poster', 'aired')
                 ->orderBy('aired','desc');
