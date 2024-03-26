@@ -129,10 +129,19 @@ class ApiController extends Controller
         return $this->user->updateProfile($request);
 	}
 
+
+    public function recentList(Request $request) {
+        $data = [
+            'animes' => $this->anime->getRecents($request->input('anime_last_id')),
+            'episodes' => $this->episode->getRecents($request->input('episode_last_id')),
+            'players' => $this->player->getRecents($request->input('player_last_id')),
+        ];
+        return response()->json($data, 200);
+    }
+
     public function listsAnimes(Request $request){
         return $this->user->getListAnimes($request);
     }
-
     public function home(Request $request)
     {
         try
@@ -211,4 +220,28 @@ class ApiController extends Controller
         return $this->player->getPlayersByEpisodeId($request);
     }
     
+    public function addFavorite(Request $request){
+        return $this->user->addFavorite($request);
+    }
+
+    public function deleteFavorite(Request $request){
+        return $this->user->deleteFavorite($request);
+    }
+
+    public function addView(Request $request){
+        return $this->user->addView($request);
+    }
+    
+    public function deleteView(Request $request){
+        return $this->user->deleteView($request);
+    }
+
+    public function addWatching(Request $request){
+        return $this->user->addWatching($request);
+    }
+    
+    public function deleteWatching(Request $request){
+        return $this->user->deleteWatching($request);
+    }
+
 }

@@ -200,5 +200,95 @@ class User extends Authenticatable
             return response()->json(['message' => $e->getMessage()], 401);
         }
     }
+
+    public function addFavorite($request) {
+        try {
+        $user = $request->user();
+        $anime = Anime::find($request->anime_id);
+        if(!$anime)
+            throw new Exception("El anime no existe", 1);
+        $user->favorite($anime);
+        return response()->json([
+            'message' => 'Agregado a Favoritos',
+        ], 200);
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 401);
+        }
+    }
+
+    public function deleteFavorite($request) {
+        try {
+        $user = $request->user();
+        $anime = Anime::find($request->anime_id);
+        if(!$anime)
+            throw new Exception("El anime no existe", 1);
+        $user->unfavorite($anime);
+        return response()->json([
+            'message' => 'Quitado de Favoritos',
+        ], 200);
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 401);
+        }
+    }
+
+    public function addView($request) {
+        try {
+        $user = $request->user();
+        $anime = Anime::find($request->anime_id);
+        if(!$anime)
+            throw new Exception("El anime no existe", 1);
+        $user->view($anime);
+        return response()->json([
+            'message' => 'Agregado a Vistos',
+        ], 200);
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 401);
+        }
+    }
+
+    public function deleteView($request) {
+        try {
+        $user = $request->user();
+        $anime = Anime::find($request->anime_id);
+        if(!$anime)
+            throw new Exception("El anime no existe", 1);
+        $user->unview($anime);
+        return response()->json([
+            'message' => 'Quitado de Vistos',
+        ], 200);
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 401);
+        }
+    }
+
+    public function addWatching($request) {
+        try {
+        $user = $request->user();
+        $anime = Anime::find($request->anime_id);
+        if(!$anime)
+            throw new Exception("El anime no existe", 1);
+        $user->watching($anime);
+        return response()->json([
+            'message' => 'Agregado a Viendo',
+        ], 200);
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 401);
+        }
+    }
+
+    public function deleteWatching($request) {
+        try {
+        $user = $request->user();
+        $anime = Anime::find($request->anime_id);
+        if(!$anime)
+            throw new Exception("El anime no existe", 1);
+        $user->unwatching($anime);
+        return response()->json([
+            'message' => 'Quitado de Viendo',
+        ], 200);
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 401);
+        }
+    }
     
 }

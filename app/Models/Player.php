@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Player extends Model
 {
@@ -19,8 +20,23 @@ class Player extends Model
         return $this->belongsTo(\App\Models\Episode::class);
     }
 
+    public function getRecents($player_last_id = null){
+        try {
+            $data = $this->orderBy('id', 'desc')
+                ->limit(24);
+            if($player_last_id){
+                $data = $data->where('id','>',$player_last_id);
+            }
+            return $data->get();
+        } catch (Exception $e) {
+            return array('message' => $e->getMessage());
+        }
+    }
+
+
     public function getPlayersByEpisodeId($request){
         try {
+            DB::unprepared('update episodes set views_app = views_app+1 where id = '.$request->episode_id.'');
             $players = $this
                 ->select('code', 'server_id', 'languaje', 'title', 'embed', 'servers.status')
                 ->where('animes.id', $request->anime_id)

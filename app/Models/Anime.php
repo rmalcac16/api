@@ -27,9 +27,13 @@ class Anime extends Model
         return $this->hasMany(\App\Models\MyList::class);
     }
 
-    public function getRecents(){
+    public function getRecents($last_id = null){
         try {
-            return $this->select('id','name','poster')->orderBy('created_at', 'desc')->take(10)->get();
+            $data = $this->orderBy('id', 'desc')
+                ->limit(24);
+            if($last_id)
+                $data = $data->where('id','>',$last_id);
+            return $data->get();
         } catch (Exception $e) {
             return array('message' => $e->getMessage());
         }

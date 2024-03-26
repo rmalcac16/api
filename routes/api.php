@@ -16,6 +16,8 @@ use App\Http\Controllers\ApiController;
 |
 */
 
+Route::get("recentList", ApiController::class . "@recentList");
+
 Route::post("login", ApiController::class . "@login");
 Route::post("register", ApiController::class . "@register");
 Route::post("send-code", ApiController::class . "@sendCode");
@@ -32,4 +34,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post("players", ApiController::class . "@players");
     Route::post("lists-animes", ApiController::class . "@listsAnimes");
     Route::post("update", ApiController::class . "@updateProfile");
+
+    Route::post("add-favorite", ApiController::class . "@addFavorite");
+    Route::post("delete-favorite", ApiController::class . "@deleteFavorite");
+    Route::post("add-view", ApiController::class . "@addView");
+    Route::post("delete-view", ApiController::class . "@deleteView");
+    Route::post("add-watching", ApiController::class . "@addWatching");
+    Route::post("delete-watching", ApiController::class . "@deleteWatching");
 });
+

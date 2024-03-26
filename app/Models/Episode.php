@@ -26,14 +26,14 @@ class Episode extends Model
         return $this->belongsTo(\App\Models\Anime::class);
     }
 
-    public function getRecents(){
+    public function getRecents($episode_last_id = null){
         try {
-            return $this
-                ->select('episodes.id','name', 'number', 'banner', 'animes.id as animeId')
-                ->join('animes', 'animes.id', '=', 'episodes.anime_id')
-                ->orderBy('episodes.created_at', 'desc')
-                ->take(10)
-                ->get();
+            $data = $this->orderBy('id', 'desc')
+                ->limit(24);
+            if($episode_last_id){
+                $data = $data->where('id','>',$episode_last_id);
+            }
+            return $data->get();
         } catch (Exception $e) {
             return array('message' => $e->getMessage());
         }
