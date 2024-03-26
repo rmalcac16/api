@@ -28,7 +28,7 @@ class Episode extends Model
 
     public function getRecents($episode_last_id = null){
         try {
-            $data = $this->orderBy('id', 'desc')
+            $data = $this->orderBy('id', 'asc')
                 ->limit(24);
             if($episode_last_id){
                 $data = $data->where('id','>',$episode_last_id);
