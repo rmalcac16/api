@@ -29,7 +29,8 @@ class Anime extends Model
 
     public function getRecents($last_id = null){
         try {
-            $data = $this->orderBy('id', 'asc');
+            $data = $this->orderBy('id', 'asc')
+                ->limit(50);
             if($last_id)
                 $data = $data->where('id','>',$last_id);
             return $data->get();
