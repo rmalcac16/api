@@ -22,8 +22,7 @@ class Player extends Model
 
     public function getRecents($player_last_id = null){
         try {
-            $data = $this->orderBy('id', 'asc')
-                ->limit(48);
+            $data = $this->orderBy('id', 'asc');
             if($player_last_id){
                 $data = $data->where('id','>',$player_last_id);
             }
